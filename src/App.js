@@ -1,25 +1,71 @@
-import logo from './logo.svg';
+import React, {Component} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+import contactos from './sample/contactos.json'
+
+
+import Navbar from './components/nav-bar';
+import Contactos from './components/Contactos';
+import ContactoForm from './components/ContactoForm';
+
+
+
+class App extends Component {
+  
+  
+  state = {
+    contactos: contactos
+  }
+  
+  addContacto = (nombre, numero, direccion) => {
+    
+    const newContacto = {
+      nombre: nombre,
+      numero: numero,
+      direccion: direccion,
+      id: this.state.contactos.length
+    }
+
+    this.setState({
+      contactos: [...this.state.contactos, newContacto]
+    })
+  }
+
+  
+  deleteContacto = (id) => {
+    const newContacto = this.state.contactos.filter(contacto => contacto.id !==id);
+    this.setState({
+      contactos: newContacto
+    })
+  }
+
+  searchContacto = (dato) => {
+    const Search = this.state.contactos.filter(contacto => {
+      if(contacto.nombre.includes(dato) ||
+      contacto.numero.includes(dato) ||
+      contacto.direccion.includes(dato) ){
+        
+        return contacto;
+      }
+    });
+    this.setState({contactos: Search})
+  }
+
+ 
+  render() {
+    return <div>
+      <Navbar
+        contactosNews = {this.state.contactos}
+        key = {contactos.id}
+        searchContacto = {this.searchContacto}/>
+
+      <ContactoForm addContacto = {this.addContacto}/>
+      <Contactos 
+      contactos={this.state.contactos} 
+      deleteContacto = {this.deleteContacto}/>
     </div>
-  );
+  }
 }
 
 export default App;
